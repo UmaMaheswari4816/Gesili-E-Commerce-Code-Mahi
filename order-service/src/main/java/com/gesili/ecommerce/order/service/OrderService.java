@@ -27,6 +27,23 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>{@link #placeOrder} persists the order (status {@code PENDING_INVENTORY}) and an
  * {@code OrderCreated} outbox row in ONE transaction (transactional outbox). The relay
  * publishes it; inventory reserves; events flow back and drive the transitions below.
+ *
+ * <p>FLOW (this class is the saga's state machine):
+ * <pre>
+ *   placeOrder()          ← called by OrderController (the HTTP entry point)
+ *     saves Order + OutboxEvent(OrderCreated)  → OutboxRelay → Kafka order.events
+ *
+ *   onInventoryReserved() ← called by SagaEventListener on InventoryReserved (from inventory-service)
+ *     Order: PENDING_INVENTORY → PAYMENT_PENDING  (sets the 15-min payment deadline)
+ *
+ *   onPaymentCompleted()  ← called by SagaEventListener on PaymentCompleted (from payment-service)
+ *     Order: PAYMENT_PENDING → CONFIRMED  → emits OrderConfirmed → notification-service
+ *
+ *   cancel()              ← called on InventoryReservationFailed / PaymentFailed / timeout
+ *     Order → CANCELLED   → emits OrderCancelled  → inventory releases stock, notify customer
+ * </pre>
+ * Each transition is idempotent (guarded by the current status) because the triggering
+ * Kafka events can be redelivered.
  */
 @Slf4j
 @Service

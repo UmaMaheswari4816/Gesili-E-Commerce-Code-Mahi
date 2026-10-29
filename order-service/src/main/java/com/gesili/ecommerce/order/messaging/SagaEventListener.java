@@ -16,6 +16,16 @@ import org.springframework.stereotype.Component;
  * <p>Each message is an {@code EventEnvelope} JSON. We dedupe on {@code eventId} (Kafka is
  * at-least-once), then route on {@code eventType}. Consumer group {@code order-service} keeps
  * independent offsets; keying by orderId upstream preserves per-order ordering.
+ *
+ * <p>FLOW (this is how events from OTHER services re-enter order-service):
+ * <pre>
+ *   inventory-service → Kafka inventory.events ─┐
+ *   payment-service   → Kafka payment.events  ──┴▶ HERE → OrderService.<transition>()
+ *     InventoryReserved          → OrderService.onInventoryReserved()
+ *     InventoryReservationFailed → OrderService.cancel("OUT_OF_STOCK")
+ *     PaymentCompleted           → OrderService.onPaymentCompleted()
+ *     PaymentFailed              → OrderService.cancel("PAYMENT_FAILED")
+ * </pre>
  */
 @Slf4j
 @Component

@@ -24,6 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Payment orchestration: create provider orders on reservation, process verified webhooks
  * forward-only and idempotently, and refund late payments on cancelled/timed-out orders.
+ *
+ * <p>FLOW (two entry points):
+ * <pre>
+ *   initiate()       ← PaymentSagaListener (on InventoryReserved) — creates provider order
+ *   handleWebhook()  ← WebhookController (provider called back) — emits the money events:
+ *        CAPTURED (order active)    → PaymentStatus.CAPTURED  → PaymentCompleted
+ *        CAPTURED (order cancelled) → refund                  → PaymentRefunded
+ *        FAILED                     → PaymentStatus.FAILED    → PaymentFailed
+ *   (ReconciliationJob retries stuck refunds — the missed-webhook safety net)
+ * </pre>
  */
 @Slf4j
 @Service

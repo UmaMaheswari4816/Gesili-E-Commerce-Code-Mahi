@@ -27,6 +27,18 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>Flow: verify signature over raw body &rarr; parse &rarr; idempotent, forward-only
  * processing. Always returns 200 on a verified webhook (including replays) so the provider
  * stops retrying; returns 400 only when the signature is invalid.
+ *
+ * <p>FLOW (money enters the saga HERE, from outside):
+ * <pre>
+ *   Razorpay/Stripe  → POST /api/v1/payments/webhook/{provider}  ─▶ HERE
+ *       (gateway lets this through PUBLIC and UNTOUCHED — no body filters — so the
+ *        raw bytes the provider signed reach us intact)
+ *       → provider.verifySignature(rawBody, sig)   — reject with 400 if bad
+ *       → PaymentService.handleWebhook()
+ *            captured → emit PaymentCompleted → Kafka payment.events → order + inventory + notify
+ *            failed   → emit PaymentFailed
+ *            captured-but-order-cancelled → refund → emit PaymentRefunded
+ * </pre>
  */
 @Slf4j
 @RestController

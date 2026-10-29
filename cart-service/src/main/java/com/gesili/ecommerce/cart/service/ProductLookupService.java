@@ -31,6 +31,15 @@ import org.springframework.stereotype.Service;
  *
  * <p>Order of aspects (R4j default): Retry( CircuitBreaker( RateLimiter( TimeLimiter(
  * Bulkhead( call ))))). TimeLimiter requires a {@code CompletableFuture} return.
+ *
+ * <p>FLOW (a resilient synchronous cross-service call — contrast with the async saga):
+ * <pre>
+ *   CartController.productInfo()  → HERE: getProduct()
+ *        → ProductClient (OpenFeign) → lb://product-service (resolved via Eureka)
+ *        → product-service ProductQueryController.getById()
+ *   if product-service is down/slow: retry → circuit opens → fallback() returns empty
+ *        → the cart still works (graceful degradation)
+ * </pre>
  */
 @Slf4j
 @Service

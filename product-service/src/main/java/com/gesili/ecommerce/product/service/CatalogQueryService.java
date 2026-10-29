@@ -17,6 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
  * The QUERY side of CQRS. Point lookups (by id) read the authoritative write model; search
  * and filtering read the Elasticsearch read model, which is optimized for those access
  * patterns and scales independently of writes.
+ *
+ * <p>FLOW (the READ half of CQRS):
+ * <pre>
+ *   browser → gateway → ProductQueryController → HERE
+ *     getById()  → PostgreSQL (write model = source of truth)
+ *     search()   → Elasticsearch (read model, fast full-text)   ← kept in sync by
+ *                                                                  ProductProjectionService
+ * </pre>
  */
 @Service
 public class CatalogQueryService {

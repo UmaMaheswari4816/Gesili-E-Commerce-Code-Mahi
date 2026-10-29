@@ -23,6 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>Wrapped in {@link SchedulerLock} so it is a <strong>single writer</strong>: two instances
  * never publish the same rows or interleave ordering. At-least-once publication is safe
  * because all consumers deduplicate on the envelope's {@code eventId}.
+ *
+ * <p>FLOW (the bridge from the database to Kafka):
+ * <pre>
+ *   OrderService.placeOrder() wrote a row into the `outbox` table (same TX as the order)
+ *        │
+ *        ▼  (this relay, every ~1s)
+ *   read unpublished rows  →  kafka.send(topic, key=orderId, payload)  →  mark published_at
+ *        │
+ *        ▼
+ *   Kafka order.events  →  inventory-service / notification-service consume it
+ * </pre>
  */
 @Slf4j
 @Component

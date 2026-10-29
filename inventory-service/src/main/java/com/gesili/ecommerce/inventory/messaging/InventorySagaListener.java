@@ -34,6 +34,20 @@ import org.springframework.stereotype.Component;
  * </ul>
  *
  * Reserve is idempotent on {@code orderId:sku}, so a redelivered {@code OrderCreated} is safe.
+ *
+ * <p>FLOW (inventory's part of the saga):
+ * <pre>
+ *   order-service → Kafka order.events (OrderCreated) ─▶ HERE
+ *       → InventoryService.reserve() each line (row lock, no oversell)
+ *       → emit InventoryReserved  → Kafka inventory.events → order-service + payment-service
+ *         (or InventoryReservationFailed if out of stock)
+ *
+ *   payment-service → Kafka payment.events (PaymentCompleted) ─▶ HERE
+ *       → InventoryService.commit() (stock permanently decremented)
+ *
+ *   payment.events (PaymentFailed) / order.events (OrderCancelled) ─▶ HERE
+ *       → InventoryService.release() (compensation) → emit InventoryReleased
+ * </pre>
  */
 @Slf4j
 @Component

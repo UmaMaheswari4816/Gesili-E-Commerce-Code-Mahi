@@ -18,6 +18,11 @@ import reactor.core.publisher.Mono;
  *
  * <p>This filter only reads/writes HEADERS — it never touches the request body — so it is
  * safe on all routes, including the payment webhook route.
+ *
+ * <p>FLOW: runs first on EVERY request (HIGHEST_PRECEDENCE). The X-Correlation-Id it sets is
+ * forwarded to the downstream service, logged by every service (%X&#123;correlationId&#125;),
+ * and echoed back to the client — so you can trace one request's log lines across all
+ * services by that id.
  */
 @Component
 public class CorrelationIdFilter implements WebFilter, Ordered {

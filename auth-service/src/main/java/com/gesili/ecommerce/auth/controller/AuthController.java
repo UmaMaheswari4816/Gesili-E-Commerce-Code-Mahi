@@ -24,7 +24,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Public auth endpoints plus an authenticated profile endpoint. */
+/**
+ * Public auth endpoints plus an authenticated profile endpoint.
+ *
+ * <p>FLOW (identity starts here):
+ * <pre>
+ *   browser → gateway (PUBLIC routes) → HERE (AuthController :9001)
+ *     POST /register → AuthService.register()  (BCrypt-hash the password, save user)
+ *     POST /login    → AuthService.login()      → returns { accessToken (RS256 JWT), refreshToken }
+ *     POST /refresh  → AuthService.refresh()     (rotates the refresh token)
+ *     GET  /me       → AuthService.getById()     (requires a valid access token)
+ * </pre>
+ * Other services never call this at request time — they verify tokens offline using the
+ * public keys from {@code JwksController} (/.well-known/jwks.json).
+ */
 @RestController
 @RequestMapping(ApiConstants.API_V1 + "/auth")
 @Tag(name = "Authentication", description = "Registration, login and token management")

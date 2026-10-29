@@ -18,6 +18,15 @@ import org.springframework.stereotype.Component;
  * <p>Recipient resolution is a simplification: in a real system the service would look up the
  * user's email/phone (from auth-service or a cached profile). Here we derive a placeholder
  * from the order id and log it; wiring a real lookup is a documented extension.
+ *
+ * <p>FLOW (the END of the saga — this service only reacts, never emits):
+ * <pre>
+ *   order.events / payment.events / inventory.events ─▶ HERE
+ *       OrderConfirmed / OrderCancelled / PaymentCompleted / PaymentFailed /
+ *       PaymentRefunded / InventoryReservationFailed
+ *         → dedupe on eventId → NotificationService.notify()
+ *            → NotificationTemplates.render() → EmailChannel/SmsChannel.send() → log row
+ * </pre>
  */
 @Slf4j
 @Component

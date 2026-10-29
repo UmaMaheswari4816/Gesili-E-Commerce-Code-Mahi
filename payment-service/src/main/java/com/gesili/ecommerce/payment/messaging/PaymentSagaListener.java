@@ -22,6 +22,17 @@ import org.springframework.stereotype.Component;
  * on the order total via the OrderCreated event the payment service also observes; for
  * simplicity here we read the amount from the reserved event if present, else default to the
  * order lookup (documented simplification).
+ *
+ * <p>FLOW (payment's entry into the saga — note it does NOT emit the money events here):
+ * <pre>
+ *   order-service     → Kafka order.events (OrderCreated)      ─▶ HERE: cache the order amount
+ *   inventory-service → Kafka inventory.events (InventoryReserved) ─▶ HERE
+ *       → PaymentService.initiate() creates the provider order (payment INITIATED)
+ *   order-service     → Kafka order.events (OrderCancelled)    ─▶ HERE: mark terminal
+ *       (so a LATE capture webhook later triggers a refund, not a confirm)
+ * </pre>
+ * PaymentCompleted/Failed/Refunded are emitted later, by the WEBHOOK path — see
+ * {@code WebhookController} → {@code PaymentService.handleWebhook()}.
  */
 @Slf4j
 @Component

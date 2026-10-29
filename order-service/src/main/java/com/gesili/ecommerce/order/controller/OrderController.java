@@ -27,6 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
  * Order API. Place-order returns 202 with the order in PENDING_INVENTORY; the client then
  * polls GET /orders/{id} until status is PAYMENT_PENDING (checkout params appear) or a
  * terminal state.
+ *
+ * <p>FLOW (where this sits):
+ * <pre>
+ *   browser → API gateway (:8080) → HERE (OrderController :9005)
+ *       POST /orders  → OrderService.placeOrder()  → saves order + outbox row
+ *       GET  /orders/{id}  → OrderService.get()     ← the client polls this
+ * </pre>
+ * This is the ENTRY POINT of the order saga. From here the flow goes asynchronous: the
+ * outbox relay publishes OrderCreated to Kafka, and the saga continues in the listeners
+ * (see {@code SagaEventListener}). Nothing here calls inventory/payment directly.
  */
 @RestController
 @RequestMapping(ApiConstants.API_V1 + "/orders")

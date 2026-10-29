@@ -18,6 +18,15 @@ import org.springframework.stereotype.Service;
  * be driven by the outbox/events rather than an in-process {@code @Async} call; here we keep
  * it simple and note the trade-off (a crash between the DB commit and the projection can
  * leave ES briefly stale until the next write or a reindex).
+ *
+ * <p>FLOW (the SYNC half of CQRS — write model → read model):
+ * <pre>
+ *   CatalogCommandService.createProduct()/updateProduct()  (writes to PostgreSQL)
+ *        │  then calls (async)
+ *        ▼
+ *   HERE: project()  → upsert a denormalized ProductDocument into Elasticsearch
+ *        → later, CatalogQueryService.search() reads it
+ * </pre>
  */
 @Slf4j
 @Service

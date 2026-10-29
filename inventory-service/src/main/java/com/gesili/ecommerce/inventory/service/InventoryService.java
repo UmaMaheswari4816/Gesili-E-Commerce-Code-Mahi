@@ -34,6 +34,15 @@ import org.springframework.transaction.annotation.Transactional;
  * <p><strong>Idempotent release</strong>: guarded by status. Only {@code HELD -> RELEASED}
  * returns stock; a release of an already {@code RELEASED} or {@code COMMITTED} reservation is
  * a no-op that still succeeds and never re-adds stock.
+ *
+ * <p>FLOW (who calls what):
+ * <pre>
+ *   reserve()  ← InventorySagaListener (on OrderCreated)   — the no-oversell hot path
+ *   commit()   ← InventorySagaListener (on PaymentCompleted)
+ *   release()  ← InventorySagaListener (on PaymentFailed/OrderCancelled)
+ *              ← ReservationExpiryJob (TTL expired)
+ *   upsertStock() ← InventoryController (admin sets stock levels)
+ * </pre>
  */
 @Slf4j
 @Service
