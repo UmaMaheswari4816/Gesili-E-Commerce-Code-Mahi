@@ -1,0 +1,12 @@
+# Tells Grafana where to find dashboard JSON files. Dashboards land here in Phase 9.
+apiVersion: 1
+
+providers:
+  - name: gecili
+    orgId: 1
+    folder: Gecili
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

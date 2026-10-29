@@ -1,0 +1,91 @@
+# =============================================================================
+# Values for the Gecili platform chart.
+#
+# `services` is a map the templates loop over to render a Deployment + Service (and
+# optional HPA) per app service — one place to change replicas, image tags, ports,
+# resources, and env, instead of 10 near-identical manifest sets.
+#
+# Backing stores (Postgres, Redis, Kafka, Elasticsearch, Zipkin) are NOT managed here:
+# in a real cluster you'd use managed services or dedicated operators/charts (e.g. the
+# Bitnami PostgreSQL/Kafka charts). Connection details are injected via the shared config.
+# =============================================================================
+
+global:
+  imageRegistry: ghcr.io/umamaheswari4816
+  imageTag: "0.1.0"
+  imagePullPolicy: IfNotPresent
+  # Non-secret shared config (secrets come from the `appSecrets` Secret, see secret.yaml).
+  config:
+    CONFIG_SERVER_URI: http://config-server:8888
+    EUREKA_URI: http://service-registry:8761/eureka/
+    KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    JWKS_URI: http://auth-service:9001/.well-known/jwks.json
+    SPRING_PROFILES_ACTIVE: prod
+
+# Values rendered into the `appSecrets` Secret. In real clusters these come from a
+# sealed-secrets / external-secrets operator or the cloud secret manager — NEVER committed.
+# Placeholders here are overridden at deploy time (helm --set / -f secrets.prod.yaml).
+secrets:
+  POSTGRES_USER: gecili
+  POSTGRES_PASSWORD: "CHANGE_ME"
+  RAZORPAY_KEY_ID: ""
+  RAZORPAY_KEY_SECRET: ""
+  RAZORPAY_WEBHOOK_SECRET: ""
+  STRIPE_API_KEY: ""
+  STRIPE_WEBHOOK_SECRET: ""
+
+# Default probe + resource settings applied to every service unless overridden.
+defaults:
+  replicas: 1
+  resources:
+    requests: { cpu: "100m", memory: "256Mi" }
+    limits: { cpu: "500m", memory: "512Mi" }
+  readinessPath: /actuator/health/readiness
+  livenessPath: /actuator/health/liveness
+
+services:
+  config-server:
+    port: 8888
+    # Config server starts first; others depend on it (initContainers wait on it).
+    bootstrap: true
+  service-registry:
+    port: 8761
+  api-gateway:
+    port: 8080
+    exposeIngress: true
+    hpa: { enabled: true, minReplicas: 2, maxReplicas: 5, targetCPUUtilizationPercentage: 70 }
+  auth-service:
+    port: 9001
+    extraEnv:
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/gecili_auth
+  product-service:
+    port: 9002
+    extraEnv:
+      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/gecili_product
+      ELASTICSEARCH_URIS: http://elasticsearch:9200
+  inventory-service:
+    port: 9003
+    extraEnv:
+      INVENTORY_DB_URL: jdbc:postgresql://postgres:5432/gecili_inventory
+  cart-service:
+    port: 9004
+    extraEnv:
+      REDIS_HOST: redis
+  order-service:
+    port: 9005
+    extraEnv:
+      ORDER_DB_URL: jdbc:postgresql://postgres:5432/gecili_order
+    hpa: { enabled: true, minReplicas: 2, maxReplicas: 4, targetCPUUtilizationPercentage: 75 }
+  payment-service:
+    port: 9006
+    extraEnv:
+      PAYMENT_DB_URL: jdbc:postgresql://postgres:5432/gecili_payment
+  notification-service:
+    port: 9007
+    extraEnv:
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/gecili_notification
+
+ingress:
+  enabled: true
+  className: nginx
+  host: gecili.local

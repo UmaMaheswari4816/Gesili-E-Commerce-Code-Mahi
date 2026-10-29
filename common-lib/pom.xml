@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.gecili.ecommerce</groupId>
+        <artifactId>gecili-ecommerce-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>common-lib</artifactId>
+    <name>Gecili E-Commerce :: common-lib</name>
+    <description>Shared contracts: DTOs, Kafka events, enums, RFC 7807 error model,
+        exceptions, constants, utilities and validation annotations.
+        Contains NO JPA entities, repositories or business logic.</description>
+
+    <!--
+      This is a plain library jar, NOT a Spring Boot application.
+      Dependencies are kept deliberately light: no DB driver, no web server, no JPA.
+      We only pull in what contracts genuinely need (validation API, Jackson for
+      (de)serialization annotations). Jackson/validation versions come from the
+      Spring Boot parent's dependency management, so no versions are hardcoded here.
+    -->
+    <dependencies>
+        <!-- Bean Validation annotations used on shared DTOs (@NotNull, @Email, ...). -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Jackson annotations for event/DTO (de)serialization. -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
+        <!-- Spring's ProblemDetail (RFC 7807) lives in spring-web. Lightweight, no server. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
+        <!-- Lombok (compile-time only). -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+              Explicitly DO NOT apply the spring-boot-maven-plugin here.
+              A library must stay a plain jar; repackaging it into an executable
+              fat jar would make it unusable as a dependency.
+            -->
+        </plugins>
+    </build>
+
+</project>

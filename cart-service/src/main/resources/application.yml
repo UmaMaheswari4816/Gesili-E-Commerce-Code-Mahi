@@ -1,0 +1,71 @@
+server:
+  port: ${CART_SERVICE_PORT:9004}
+
+spring:
+  application:
+    name: cart-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI:http://localhost:9001/.well-known/jwks.json}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+gecili:
+  cart:
+    ttl-seconds: ${CART_TTL_SECONDS:604800}   # 7 days
+
+# ---- Resilience4j (Phase 9 demo) for the product-service lookup ----
+resilience4j:
+  circuitbreaker:
+    instances:
+      productLookup:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50          # open at 50% failures
+        wait-duration-in-open-state: 10s    # stay open 10s, then half-open
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: true
+  retry:
+    instances:
+      productLookup:
+        max-attempts: 3
+        wait-duration: 500ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+  bulkhead:
+    instances:
+      productLookup:
+        max-concurrent-calls: 10            # cap concurrent product lookups
+  timelimiter:
+    instances:
+      productLookup:
+        timeout-duration: 2s                # fail a hung call after 2s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

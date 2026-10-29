@@ -1,0 +1,21 @@
+# Clustered Eureka — peer 1 of 2. Run with: --spring.profiles.active=peer1
+# Two registries that register WITH EACH OTHER (peer awareness) so neither is a
+# single point of failure: each replicates its registry to the other.
+#
+# For local testing add host aliases to your hosts file:
+#   127.0.0.1 peer1 peer2
+# Then start two instances on different ports with profiles peer1 and peer2.
+server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: peer1
+  client:
+    # In a cluster each node DOES register and fetch — from its peer.
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://peer2:8762/eureka/
+  server:
+    enable-self-preservation: true

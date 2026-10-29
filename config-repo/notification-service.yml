@@ -1,0 +1,4 @@
+# Centralized config for notification-service.
+gecili:
+  notification:
+    default-channel: email   # email | sms (channel Strategy beans)

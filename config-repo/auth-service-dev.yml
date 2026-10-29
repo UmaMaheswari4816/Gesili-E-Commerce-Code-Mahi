@@ -1,0 +1,5 @@
+# Dev-profile overrides for auth-service.
+logging:
+  level:
+    com.gecili.ecommerce.auth: DEBUG
+    org.springframework.security: INFO

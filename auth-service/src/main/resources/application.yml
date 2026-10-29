@@ -1,0 +1,60 @@
+# =============================================================================
+# auth-service — local bootstrap config. The rest is served by the Config Server
+# (config-repo/auth-service.yml + per-profile). Properties needed before that
+# import (name + where the config server is) live here.
+# =============================================================================
+server:
+  port: ${AUTH_SERVICE_PORT:9001}
+
+spring:
+  application:
+    name: auth-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+
+  datasource:
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/gecili_auth}
+    username: ${POSTGRES_USER:gecili}
+    password: ${POSTGRES_PASSWORD:gecili}
+  jpa:
+    hibernate:
+      ddl-auto: validate   # schema is owned by Flyway, never by Hibernate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+# ---- Auth settings (safe dev defaults; override via config-repo / env) ----
+gecili:
+  auth:
+    issuer: ${JWT_ISSUER:http://localhost:9001}
+    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}
+    refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS:604800}
+    jwt:
+      # Blank => generate an EPHEMERAL dev keypair at startup (fine for local dev).
+      # Set to file:./keys/jwt-private.pem (gitignored) for a stable key.
+      private-key-location: ${JWT_PRIVATE_KEY_LOCATION:}
+      public-key-location: ${JWT_PUBLIC_KEY_LOCATION:}
+      active-key-id: ${JWT_ACTIVE_KID:dev-ephemeral}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

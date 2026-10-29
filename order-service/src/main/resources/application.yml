@@ -1,0 +1,69 @@
+server:
+  port: ${ORDER_SERVICE_PORT:9005}
+
+spring:
+  application:
+    name: order-service
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+
+  datasource:
+    url: ${ORDER_DB_URL:jdbc:postgresql://localhost:5432/gecili_order}
+    username: ${POSTGRES_USER:gecili}
+    password: ${POSTGRES_PASSWORD:gecili}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      # Idempotent producer: no duplicate records on retry; acks=all for durability.
+      properties:
+        enable.idempotence: true
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: order-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false   # manual ack after successful processing
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: record
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWKS_URI:http://localhost:9001/.well-known/jwks.json}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+gecili:
+  order:
+    payment-deadline-seconds: ${PAYMENT_DEADLINE_SECONDS:900}    # 15m (< 20m reservation TTL)
+    payment-timeout-scan-ms: ${PAYMENT_TIMEOUT_SCAN_MS:60000}
+    outbox:
+      poll-ms: ${OUTBOX_POLL_MS:1000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

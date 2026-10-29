@@ -1,0 +1,4 @@
+# Centralized config for cart-service.
+gecili:
+  cart:
+    ttl-seconds: 604800   # 7 days — abandoned carts expire automatically

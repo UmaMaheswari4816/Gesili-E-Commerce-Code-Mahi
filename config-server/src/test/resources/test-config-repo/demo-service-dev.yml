@@ -1,0 +1,3 @@
+# Per-service, per-profile override used by ConfigServerApplicationTests.
+demo:
+  profile: dev-only-value

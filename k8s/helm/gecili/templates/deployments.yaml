@@ -1,0 +1,88 @@
+{{/*
+  Render a Deployment + Service for every entry in .Values.services. One template,
+  one place to change behavior — no per-service manifest duplication.
+*/}}
+{{- $root := . -}}
+{{- range $name, $svc := .Values.services }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "gecili.labels" $root | nindent 4 }}
+    {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 4 }}
+spec:
+  replicas: {{ $svc.replicas | default $root.Values.defaults.replicas }}
+  selector:
+    matchLabels:
+      {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 8 }}
+      annotations:
+        # Scrape Spring Boot's Prometheus endpoint.
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: {{ $svc.port | quote }}
+    spec:
+      {{- if not $svc.bootstrap }}
+      # Non-bootstrap services wait for the config server before starting.
+      initContainers:
+        - name: wait-for-config
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - "until wget -q -O- http://config-server:8888/actuator/health; do echo waiting for config-server; sleep 3; done"
+      {{- end }}
+      containers:
+        - name: {{ $name }}
+          image: "{{ $root.Values.global.imageRegistry }}/{{ $name }}:{{ $root.Values.global.imageTag }}"
+          imagePullPolicy: {{ $root.Values.global.imagePullPolicy }}
+          ports:
+            - containerPort: {{ $svc.port }}
+          envFrom:
+            - configMapRef:
+                name: gecili-config
+            - secretRef:
+                name: app-secrets
+          env:
+            - name: SERVER_PORT
+              value: {{ $svc.port | quote }}
+            {{- range $k, $v := $svc.extraEnv }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: {{ $root.Values.defaults.readinessPath }}
+              port: {{ $svc.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: {{ $root.Values.defaults.livenessPath }}
+              port: {{ $svc.port }}
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            failureThreshold: 4
+          resources:
+            {{- toYaml $root.Values.defaults.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "gecili.labels" $root | nindent 4 }}
+spec:
+  selector:
+    {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 4 }}
+  ports:
+    - port: {{ $svc.port }}
+      targetPort: {{ $svc.port }}
+  type: ClusterIP
+{{- end }}

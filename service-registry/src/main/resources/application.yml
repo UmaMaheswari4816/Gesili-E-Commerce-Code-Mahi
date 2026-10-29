@@ -1,0 +1,49 @@
+# =============================================================================
+# Service Registry (Eureka) — local bootstrap config.
+#
+# The registry imports the rest of its config from the Config Server. The handful
+# of properties needed BEFORE that import (its own name and where to find the
+# config server) live here. In dev the import is 'optional:' so the registry can
+# still start if the config server is briefly unavailable.
+# =============================================================================
+
+server:
+  port: ${EUREKA_PORT:8761}
+
+spring:
+  application:
+    name: service-registry
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+
+# ---- Standalone Eureka (default dev profile) ----
+# A standalone server must NOT try to register with or fetch from itself.
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    # Self-preservation: when too many heartbeats are missed at once (e.g. a network
+    # partition), Eureka STOPS evicting instances rather than wrongly deregistering
+    # healthy ones it simply can't reach. Great in prod; noisy in dev where you stop
+    # services constantly, so we disable it locally and shorten eviction.
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 15000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.netflix.eureka: WARN
+    com.netflix.discovery: WARN

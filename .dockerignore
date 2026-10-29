@@ -1,0 +1,24 @@
+# Keep the Docker build context (the repo root) small and clean.
+.git
+.github
+**/target
+**/*.iml
+.idea
+.vscode
+*.log
+logs
+node_modules
+dist
+.next
+# secrets must never enter an image layer
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.jks
+*.keystore
+secrets
+# docs and infra are not needed to build service images
+docs
+k8s

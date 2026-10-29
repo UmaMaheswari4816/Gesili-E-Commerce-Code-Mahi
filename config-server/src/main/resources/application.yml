@@ -1,0 +1,52 @@
+# =============================================================================
+# Config Server's OWN configuration (it cannot fetch config from itself).
+#
+# Native backend: serves YAML from the config-repo/ folder on the filesystem.
+# search-locations points at the repo folder relative to where the server runs:
+#   - from the repo root (java -jar / mvn):   ../config-repo  resolves wrong, so we
+#     use an absolute-ish classpath + file search that works both from the module
+#     dir and the repo root. The default below assumes you run from the repo root
+#     or pass -Dspring.cloud.config.server.native.search-locations explicitly.
+# =============================================================================
+
+server:
+  port: ${CONFIG_SERVER_PORT:8888}
+
+spring:
+  application:
+    name: config-server
+
+  profiles:
+    # 'native' activates the filesystem backend instead of the default git backend.
+    active: native
+
+  cloud:
+    config:
+      server:
+        native:
+          # Where the per-service/per-profile YAML lives. file:./config-repo works when
+          # the server is started from the repo root; the Docker image mounts it at
+          # /config-repo (see docker-compose). Both are listed; first match wins.
+          search-locations: file:./config-repo,file:../config-repo,file:/config-repo
+    bus:
+      enabled: false   # enable with --spring.profiles.active=native,bus when Kafka is up
+
+# Eureka client is present on the classpath but OFF by default in dev so the config
+# server has no bootstrap dependency on the registry. Enable in stage/prod if you want
+# clients to discover the config server by name (spring.cloud.config.discovery.enabled).
+eureka:
+  client:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,busrefresh
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.config: INFO

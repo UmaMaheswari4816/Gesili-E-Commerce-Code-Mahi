@@ -1,0 +1,3 @@
+# Shared default served to every application by the test config server.
+demo:
+  shared: shared-default-value

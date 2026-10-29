@@ -1,0 +1,7 @@
+# Centralized config for order-service.
+gecili:
+  order:
+    payment-deadline-seconds: 900   # 15 minutes; shorter than the 20m inventory reservation TTL
+    payment-timeout-scan-ms: 60000
+    outbox:
+      poll-ms: 1000                 # relay poll interval

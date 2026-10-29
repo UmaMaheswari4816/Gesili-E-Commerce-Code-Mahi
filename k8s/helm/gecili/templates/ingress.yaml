@@ -1,0 +1,24 @@
+{{- if .Values.ingress.enabled }}
+# All external traffic enters through the API gateway (the single public entry point).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gecili-ingress
+  labels:
+    {{- include "gecili.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: {{ (index .Values.services "api-gateway").port }}
+{{- end }}

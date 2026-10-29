@@ -1,0 +1,11 @@
+# Non-secret shared environment for all services.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gecili-config
+  labels:
+    {{- include "gecili.labels" . | nindent 4 }}
+data:
+  {{- range $k, $v := .Values.global.config }}
+  {{ $k }}: {{ $v | quote }}
+  {{- end }}

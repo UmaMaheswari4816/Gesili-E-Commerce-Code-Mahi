@@ -1,0 +1,253 @@
+# =============================================================================
+# API Gateway — local bootstrap config. Routes/limits can be moved to the Config
+# Server (config-repo/api-gateway.yml) later; kept here for clarity in Phase 3.
+# =============================================================================
+server:
+  port: ${GATEWAY_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Validate tokens at the edge against the auth-service JWKS. kid-based key
+          # selection + rotation-with-overlap are handled by the JWK set.
+          jwk-set-uri: ${JWKS_URI:http://localhost:9001/.well-known/jwks.json}
+
+  cloud:
+    gateway:
+      # Discover services from Eureka and enable lb:// routing.
+      discovery:
+        locator:
+          enabled: false   # we define explicit routes below for control + security
+      # ---- Global CORS ----
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+            allowedMethods: [GET, POST, PUT, PATCH, DELETE, OPTIONS]
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      # ---- Default filters applied to ALL routes ----
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      # ---- Routes ----
+      routes:
+        # Auth service — public + authenticated endpoints. Rate limited per user/IP.
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userOrIpKeyResolver}"
+            - name: CircuitBreaker
+              args:
+                name: authCircuitBreaker
+                fallbackUri: forward:/fallback/auth-service
+
+        # JWKS proxy (public) so clients/tools can fetch keys via the gateway too.
+        - id: auth-jwks
+          uri: lb://auth-service
+          predicates:
+            - Path=/.well-known/jwks.json
+
+        # Proxy each service's OpenAPI JSON for the aggregated Swagger UI dropdown.
+        # /auth-service/v3/api-docs -> auth-service /v3/api-docs
+        - id: auth-service-docs
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth-service/v3/api-docs
+          filters:
+            - RewritePath=/auth-service/v3/api-docs, /v3/api-docs
+        - id: product-service-docs
+          uri: lb://product-service
+          predicates:
+            - Path=/product-service/v3/api-docs
+          filters:
+            - RewritePath=/product-service/v3/api-docs, /v3/api-docs
+
+        # -------------------------------------------------------------------
+        # PAYMENT WEBHOOK ROUTE — PHASE 0 NOTE 2.
+        # Public (no JWT) and intentionally carries NO body-reading filters:
+        # no RequestRateLimiter body inspection, no RewriteBody, no caching of
+        # the body. The payment-service verifies the provider signature over the
+        # RAW request bytes, so the gateway must forward the body untouched.
+        # (payment-service itself is wired in Phase 7; the route is reserved now.)
+        # -------------------------------------------------------------------
+        - id: payment-webhook
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/webhook/**
+          # Deliberately NO filters here.
+
+        # Example protected service routes (targets added in later phases).
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/v1/products/**, /api/v1/admin/catalog/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 20
+                redis-rate-limiter.burstCapacity: 40
+                key-resolver: "#{@userOrIpKeyResolver}"
+            - name: CircuitBreaker
+              args:
+                name: productCircuitBreaker
+                fallbackUri: forward:/fallback/product-service
+
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/v1/inventory/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: inventoryCircuitBreaker
+                fallbackUri: forward:/fallback/inventory-service
+
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/v1/cart/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 20
+                redis-rate-limiter.burstCapacity: 40
+                key-resolver: "#{@userOrIpKeyResolver}"
+            - name: CircuitBreaker
+              args:
+                name: cartCircuitBreaker
+                fallbackUri: forward:/fallback/cart-service
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/v1/orders/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: orderCircuitBreaker
+                fallbackUri: forward:/fallback/order-service
+
+        # Authenticated payment endpoints (NOT the webhook — that is the separate, public,
+        # filter-free payment-webhook route defined above).
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: paymentCircuitBreaker
+                fallbackUri: forward:/fallback/payment-service
+
+        - id: inventory-service-docs
+          uri: lb://inventory-service
+          predicates:
+            - Path=/inventory-service/v3/api-docs
+          filters:
+            - RewritePath=/inventory-service/v3/api-docs, /v3/api-docs
+        - id: order-service-docs
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/v3/api-docs
+          filters:
+            - RewritePath=/order-service/v3/api-docs, /v3/api-docs
+        - id: payment-service-docs
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment-service/v3/api-docs
+          filters:
+            - RewritePath=/payment-service/v3/api-docs, /v3/api-docs
+        - id: notification-service-docs
+          uri: lb://notification-service
+          predicates:
+            - Path=/notification-service/v3/api-docs
+          filters:
+            - RewritePath=/notification-service/v3/api-docs, /v3/api-docs
+        - id: cart-service-docs
+          uri: lb://cart-service
+          predicates:
+            - Path=/cart-service/v3/api-docs
+          filters:
+            - RewritePath=/cart-service/v3/api-docs, /v3/api-docs
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+
+# ---- Resilience4j circuit breaker defaults ----
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+    instances:
+      authCircuitBreaker:
+        base-config: default
+      productCircuitBreaker:
+        base-config: default
+      inventoryCircuitBreaker:
+        base-config: default
+      cartCircuitBreaker:
+        base-config: default
+      orderCircuitBreaker:
+        base-config: default
+      paymentCircuitBreaker:
+        base-config: default
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 4s
+
+# ---- Aggregated Swagger UI: one UI with a dropdown per service ----
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: auth-service
+        url: /auth-service/v3/api-docs
+      - name: product-service
+        url: /product-service/v3/api-docs
+      - name: inventory-service
+        url: /inventory-service/v3/api-docs
+      - name: cart-service
+        url: /cart-service/v3/api-docs
+      - name: order-service
+        url: /order-service/v3/api-docs
+      - name: payment-service
+        url: /payment-service/v3/api-docs
+      - name: notification-service
+        url: /notification-service/v3/api-docs
+  api-docs:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway
+  endpoint:
+    health:
+      show-details: always

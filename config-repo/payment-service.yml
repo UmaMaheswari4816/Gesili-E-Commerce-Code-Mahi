@@ -1,0 +1,6 @@
+# Centralized config for payment-service. Secrets are injected from env, referenced as
+# ${PLACEHOLDER} — never inline real keys here.
+gecili:
+  payment:
+    default-provider: razorpay   # India-default; Stripe plugs in via the Strategy
+    reconcile-ms: 300000         # reconciliation sweep every 5 minutes

@@ -1,0 +1,9 @@
+# Activate with: --spring.profiles.active=native,bus  (requires Kafka running).
+# Enables Spring Cloud Bus over Kafka so POST /actuator/busrefresh broadcasts a
+# RefreshRemoteApplicationEvent to every bus-connected service at once.
+spring:
+  cloud:
+    bus:
+      enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}

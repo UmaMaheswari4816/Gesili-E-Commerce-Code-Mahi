@@ -1,0 +1,67 @@
+name: CI
+
+# Builds and tests every Maven module on push/PR. Uploads any generated OpenAPI
+# specs as build artifacts (for Postman import / client SDK generation).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Make Maven Wrapper executable
+        run: chmod +x ./mvnw
+
+      - name: Build, test, verify (all modules)
+        run: ./mvnw -B clean verify
+
+      # Spotless runs as part of verify; this surfaces format failures clearly.
+      - name: Check formatting (spotless)
+        run: ./mvnw -B spotless:check
+
+      - name: Collect OpenAPI specs (if any were generated)
+        if: always()
+        run: |
+          mkdir -p openapi-specs
+          # Services export their spec to target/openapi/*.json from Phase 3 on.
+          find . -path '*/target/openapi/*.json' -exec cp {} openapi-specs/ \; 2>/dev/null || true
+          echo "Collected specs:"; ls -la openapi-specs || true
+
+      - name: Upload OpenAPI specs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-specs
+          path: openapi-specs/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: "**/target/*-reports/"
+          if-no-files-found: ignore
+          retention-days: 7

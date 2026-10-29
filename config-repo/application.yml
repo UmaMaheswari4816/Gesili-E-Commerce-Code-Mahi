@@ -1,0 +1,45 @@
+# =============================================================================
+# SHARED configuration served by the Config Server (native/filesystem backend)
+# to EVERY service as a baseline. Per-service files (e.g. auth-service.yml) and
+# per-profile files (e.g. auth-service-dev.yml) override these from Phase 2 on.
+#
+# This file is config, NOT secrets. Secrets come from env vars / a secrets
+# manager and are referenced here as ${PLACEHOLDER} — never inlined.
+# =============================================================================
+
+# ---- Actuator / observability defaults (Micrometer + Prometheus + tracing) ----
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0   # sample everything in dev; lower in prod
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+# ---- Logging: include correlation + trace ids so logs join up in Loki/Zipkin ----
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-},%X{correlationId:-}]"
+  level:
+    root: INFO
+    com.gecili: DEBUG
+
+# ---- springdoc / Swagger defaults (enabled in dev/stage; protected/off in prod) ----
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    use-root-path: true
