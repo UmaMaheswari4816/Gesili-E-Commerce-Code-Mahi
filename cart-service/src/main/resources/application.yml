@@ -23,7 +23,7 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
-gecili:
+gesili:
   cart:
     ttl-seconds: ${CART_TTL_SECONDS:604800}   # 7 days
 

@@ -1,4 +1,4 @@
--- Inventory service schema (database: gecili_inventory).
+-- Inventory service schema (database: gesili_inventory).
 
 CREATE TABLE stock_items (
     id         UUID PRIMARY KEY,

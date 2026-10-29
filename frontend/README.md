@@ -1,4 +1,4 @@
-# frontend — Gecili Shop (Next.js)
+# frontend — Gesili Shop (Next.js)
 
 A React/Next.js (App Router, TypeScript) frontend that consumes the platform **through the
 API gateway** (`:8080`). Demonstrates the full customer flow: register/login with JWT +

@@ -82,7 +82,7 @@ spec:
             - { name: KAFKA_CONTROLLER_LISTENER_NAMES, value: "CONTROLLER" }
             - { name: KAFKA_INTER_BROKER_LISTENER_NAME, value: "PLAINTEXT" }
             - { name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR, value: "1" }
-            - { name: CLUSTER_ID, value: "gecili-kraft-cluster-0001" }
+            - { name: CLUSTER_ID, value: "gesili-kraft-cluster-0001" }
 ---
 apiVersion: v1
 kind: Service

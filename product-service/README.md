@@ -41,12 +41,12 @@ Swagger UI at :9002/swagger-ui.html with **public** and **admin** groups.
 cd infra; docker compose --profile phase4 up -d   # postgres, elasticsearch, config, registry (+auth,gateway)
 .\mvnw.cmd -pl product-service spring-boot:run
 ```
-Port **9002**. Needs the `gecili_product` DB and Elasticsearch on :9200.
+Port **9002**. Needs the `gesili_product` DB and Elasticsearch on :9200.
 
 ## Verify
 
 ```bash
-# (get an ADMIN token from auth-service first; promote a user to ADMIN in gecili_auth)
+# (get an ADMIN token from auth-service first; promote a user to ADMIN in gesili_auth)
 curl -X POST http://localhost:9002/api/v1/admin/catalog/categories \
   -H "Authorization: Bearer <ADMIN_TOKEN>" -H "Content-Type: application/json" \
   -d '{"name":"T-Shirts","slug":"t-shirts","description":"Cotton tees"}'

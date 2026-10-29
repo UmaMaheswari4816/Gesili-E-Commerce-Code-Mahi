@@ -1,4 +1,4 @@
--- Product service write-model schema (database: gecili_product).
+-- Product service write-model schema (database: gesili_product).
 -- Elasticsearch holds the read model; it is not managed by Flyway.
 
 CREATE TABLE categories (

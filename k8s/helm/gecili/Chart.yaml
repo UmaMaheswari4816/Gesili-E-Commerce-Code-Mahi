@@ -1,6 +1,6 @@
 apiVersion: v2
-name: gecili-ecommerce
-description: Helm chart for the Gecili e-commerce microservices platform.
+name: gesili-ecommerce
+description: Helm chart for the Gesili e-commerce microservices platform.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

@@ -34,7 +34,7 @@ logging:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-},%X{correlationId:-}]"
   level:
     root: INFO
-    com.gecili: DEBUG
+    com.gesili: DEBUG
 
 # ---- springdoc / Swagger defaults (enabled in dev/stage; protected/off in prod) ----
 springdoc:

@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>notification-service</artifactId>
-    <name>Gecili E-Commerce :: notification-service</name>
+    <name>Gesili E-Commerce :: notification-service</name>
     <description>Consumes saga events and sends email/SMS via a channel Strategy. Idempotent,
         templated, and logs every notification. No business-data ownership.</description>
 
@@ -73,7 +73,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gecili.ecommerce</groupId>
+            <groupId>com.gesili.ecommerce</groupId>
             <artifactId>common-lib</artifactId>
         </dependency>
 

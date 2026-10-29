@@ -2,9 +2,9 @@
 apiVersion: 1
 
 providers:
-  - name: gecili
+  - name: gesili
     orgId: 1
-    folder: Gecili
+    folder: Gesili
     type: file
     disableDeletion: false
     editable: true

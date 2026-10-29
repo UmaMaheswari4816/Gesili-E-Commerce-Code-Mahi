@@ -1,6 +1,6 @@
 # Centralized config for auth-service (served by the Config Server).
 # Shared defaults for all profiles; override per-profile in auth-service-<profile>.yml.
-gecili:
+gesili:
   auth:
     issuer: http://localhost:9001
     access-ttl-seconds: 900      # 15 minutes

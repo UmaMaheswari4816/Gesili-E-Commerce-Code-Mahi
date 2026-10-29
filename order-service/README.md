@@ -40,7 +40,7 @@ At-least-once publication is safe because consumers dedupe on the envelope `even
 
 ## Run (dev)
 
-Needs PostgreSQL (`gecili_order`) and Kafka (:9092).
+Needs PostgreSQL (`gesili_order`) and Kafka (:9092).
 ```powershell
 .\mvnw.cmd -pl order-service spring-boot:run
 ```

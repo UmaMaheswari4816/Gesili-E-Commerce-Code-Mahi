@@ -10,17 +10,17 @@ kind: Deployment
 metadata:
   name: {{ $name }}
   labels:
-    {{- include "gecili.labels" $root | nindent 4 }}
-    {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 4 }}
+    {{- include "gesili.labels" $root | nindent 4 }}
+    {{- include "gesili.selectorLabels" (dict "name" $name) | nindent 4 }}
 spec:
   replicas: {{ $svc.replicas | default $root.Values.defaults.replicas }}
   selector:
     matchLabels:
-      {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 6 }}
+      {{- include "gesili.selectorLabels" (dict "name" $name) | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 8 }}
+        {{- include "gesili.selectorLabels" (dict "name" $name) | nindent 8 }}
       annotations:
         # Scrape Spring Boot's Prometheus endpoint.
         prometheus.io/scrape: "true"
@@ -45,7 +45,7 @@ spec:
             - containerPort: {{ $svc.port }}
           envFrom:
             - configMapRef:
-                name: gecili-config
+                name: gesili-config
             - secretRef:
                 name: app-secrets
           env:
@@ -77,10 +77,10 @@ kind: Service
 metadata:
   name: {{ $name }}
   labels:
-    {{- include "gecili.labels" $root | nindent 4 }}
+    {{- include "gesili.labels" $root | nindent 4 }}
 spec:
   selector:
-    {{- include "gecili.selectorLabels" (dict "name" $name) | nindent 4 }}
+    {{- include "gesili.selectorLabels" (dict "name" $name) | nindent 4 }}
   ports:
     - port: {{ $svc.port }}
       targetPort: {{ $svc.port }}

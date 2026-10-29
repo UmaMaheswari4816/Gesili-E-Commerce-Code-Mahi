@@ -100,7 +100,7 @@ jobs:
       - name: Helm upgrade --install
         if: steps.guard.outputs.skip != 'true'
         run: |
-          helm upgrade --install gecili k8s/helm/gecili \
+          helm upgrade --install gesili k8s/helm/gesili \
             --set global.imageTag=${{ github.ref_name }} \
             --set secrets.POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
             --set secrets.RAZORPAY_KEY_SECRET='${{ secrets.RAZORPAY_KEY_SECRET }}' \

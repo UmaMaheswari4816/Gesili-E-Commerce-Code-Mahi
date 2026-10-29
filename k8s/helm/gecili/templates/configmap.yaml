@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gecili-config
+  name: gesili-config
   labels:
-    {{- include "gecili.labels" . | nindent 4 }}
+    {{- include "gesili.labels" . | nindent 4 }}
 data:
   {{- range $k, $v := .Values.global.config }}
   {{ $k }}: {{ $v | quote }}

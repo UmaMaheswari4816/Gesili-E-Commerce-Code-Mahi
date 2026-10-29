@@ -1,5 +1,5 @@
 # =============================================================================
-# Values for the Gecili platform chart.
+# Values for the Gesili platform chart.
 #
 # `services` is a map the templates loop over to render a Deployment + Service (and
 # optional HPA) per app service — one place to change replicas, image tags, ports,
@@ -26,7 +26,7 @@ global:
 # sealed-secrets / external-secrets operator or the cloud secret manager — NEVER committed.
 # Placeholders here are overridden at deploy time (helm --set / -f secrets.prod.yaml).
 secrets:
-  POSTGRES_USER: gecili
+  POSTGRES_USER: gesili
   POSTGRES_PASSWORD: "CHANGE_ME"
   RAZORPAY_KEY_ID: ""
   RAZORPAY_KEY_SECRET: ""
@@ -57,16 +57,16 @@ services:
   auth-service:
     port: 9001
     extraEnv:
-      AUTH_DB_URL: jdbc:postgresql://postgres:5432/gecili_auth
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/gesili_auth
   product-service:
     port: 9002
     extraEnv:
-      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/gecili_product
+      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/gesili_product
       ELASTICSEARCH_URIS: http://elasticsearch:9200
   inventory-service:
     port: 9003
     extraEnv:
-      INVENTORY_DB_URL: jdbc:postgresql://postgres:5432/gecili_inventory
+      INVENTORY_DB_URL: jdbc:postgresql://postgres:5432/gesili_inventory
   cart-service:
     port: 9004
     extraEnv:
@@ -74,18 +74,18 @@ services:
   order-service:
     port: 9005
     extraEnv:
-      ORDER_DB_URL: jdbc:postgresql://postgres:5432/gecili_order
+      ORDER_DB_URL: jdbc:postgresql://postgres:5432/gesili_order
     hpa: { enabled: true, minReplicas: 2, maxReplicas: 4, targetCPUUtilizationPercentage: 75 }
   payment-service:
     port: 9006
     extraEnv:
-      PAYMENT_DB_URL: jdbc:postgresql://postgres:5432/gecili_payment
+      PAYMENT_DB_URL: jdbc:postgresql://postgres:5432/gesili_payment
   notification-service:
     port: 9007
     extraEnv:
-      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/gecili_notification
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/gesili_notification
 
 ingress:
   enabled: true
   className: nginx
-  host: gecili.local
+  host: gesili.local

@@ -69,7 +69,7 @@ if you like, run the one service you're editing from your IDE instead of a conta
 | Loki | http://localhost:3100 |
 
 PostgreSQL creates one database per service on first boot
-(`gecili_auth`, `gecili_product`, `gecili_inventory`, `gecili_order`, `gecili_payment`)
+(`gesili_auth`, `gesili_product`, `gesili_inventory`, `gesili_order`, `gesili_payment`)
 via `postgres/init-databases.sh` — **database per service, no shared tables**.
 
 ---

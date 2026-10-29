@@ -1,6 +1,6 @@
 # common-lib
 
-Shared **contracts** for the Gecili e-commerce platform. Every service depends on this
+Shared **contracts** for the Gesili e-commerce platform. Every service depends on this
 library; it is the single source of truth for the data shapes that cross service
 boundaries.
 
@@ -50,7 +50,7 @@ by producers. Migration path to a registry is noted in `docs/adr/`.
 
 ```xml
 <dependency>
-    <groupId>com.gecili.ecommerce</groupId>
+    <groupId>com.gesili.ecommerce</groupId>
     <artifactId>common-lib</artifactId>
     <!-- version managed by the parent POM's dependencyManagement -->
 </dependency>

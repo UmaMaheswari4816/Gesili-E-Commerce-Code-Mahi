@@ -1,4 +1,4 @@
-// Typed API client for the Gecili gateway, with automatic access-token attachment and a
+// Typed API client for the Gesili gateway, with automatic access-token attachment and a
 // transparent refresh-token retry on 401. Tokens live in localStorage (fine for a learning
 // SPA; a production app would use httpOnly cookies to resist XSS).
 import type {
@@ -14,8 +14,8 @@ import type {
 const BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "http://localhost:8080";
 
-const ACCESS_KEY = "gecili.access";
-const REFRESH_KEY = "gecili.refresh";
+const ACCESS_KEY = "gesili.access";
+const REFRESH_KEY = "gesili.refresh";
 
 export const tokenStore = {
   get access() {

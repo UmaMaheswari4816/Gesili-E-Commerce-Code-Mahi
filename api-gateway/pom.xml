@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>api-gateway</artifactId>
-    <name>Gecili E-Commerce :: api-gateway</name>
+    <name>Gesili E-Commerce :: api-gateway</name>
     <description>Spring Cloud Gateway (reactive/WebFlux): discovery routing, JWT validation,
         Redis rate limiting, CORS, correlation-id propagation, circuit-breaker fallbacks,
         and an aggregated Swagger UI.</description>
@@ -77,7 +77,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gecili.ecommerce</groupId>
+            <groupId>com.gesili.ecommerce</groupId>
             <artifactId>common-lib</artifactId>
         </dependency>
 

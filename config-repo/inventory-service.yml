@@ -1,5 +1,5 @@
 # Centralized config for inventory-service.
-gecili:
+gesili:
   inventory:
     reservation-ttl-seconds: 1200   # 20 minutes; longer than the 15m order payment deadline
     expiry-scan-ms: 60000           # sweep stale reservations every 60s

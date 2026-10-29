@@ -3,8 +3,8 @@ import { NavBar } from "@/components/NavBar";
 import "./globals.css";
 
 export const metadata = {
-  title: "Gecili Shop",
-  description: "Frontend for the Gecili e-commerce microservices platform",
+  title: "Gesili Shop",
+  description: "Frontend for the Gesili e-commerce microservices platform",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

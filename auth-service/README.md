@@ -23,7 +23,7 @@ swapping the issuer later changes little for the resource servers.
 
 ## Run (dev)
 
-Needs PostgreSQL (`gecili_auth` DB), and ideally config-server + registry running.
+Needs PostgreSQL (`gesili_auth` DB), and ideally config-server + registry running.
 
 ```powershell
 # generate a stable signing key (optional; otherwise an ephemeral dev key is used):

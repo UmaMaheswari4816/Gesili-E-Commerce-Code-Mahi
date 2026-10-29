@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>product-service</artifactId>
-    <name>Gecili E-Commerce :: product-service</name>
+    <name>Gesili E-Commerce :: product-service</name>
     <description>Product catalog: categories and products (PostgreSQL write model) with an
         Elasticsearch read model for search and filtering (CQRS).</description>
 
@@ -88,7 +88,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gecili.ecommerce</groupId>
+            <groupId>com.gesili.ecommerce</groupId>
             <artifactId>common-lib</artifactId>
         </dependency>
 

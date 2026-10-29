@@ -1,4 +1,4 @@
--- Payment service schema (database: gecili_payment).
+-- Payment service schema (database: gesili_payment).
 
 CREATE TABLE payments (
     id           UUID PRIMARY KEY,

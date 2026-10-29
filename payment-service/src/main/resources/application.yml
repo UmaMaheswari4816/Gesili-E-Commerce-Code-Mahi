@@ -8,9 +8,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${PAYMENT_DB_URL:jdbc:postgresql://localhost:5432/gecili_payment}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${PAYMENT_DB_URL:jdbc:postgresql://localhost:5432/gesili_payment}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -48,7 +48,7 @@ eureka:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
 # Payment provider config. SECRETS come from env (never commit real keys).
-gecili:
+gesili:
   payment:
     default-provider: ${PAYMENT_DEFAULT_PROVIDER:razorpay}
     reconcile-ms: ${PAYMENT_RECONCILE_MS:300000}

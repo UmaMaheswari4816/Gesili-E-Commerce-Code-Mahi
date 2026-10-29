@@ -3,9 +3,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gecili-ingress
+  name: gesili-ingress
   labels:
-    {{- include "gecili.labels" . | nindent 4 }}
+    {{- include "gesili.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:

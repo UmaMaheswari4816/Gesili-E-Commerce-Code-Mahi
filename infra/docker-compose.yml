@@ -1,5 +1,5 @@
 # =============================================================================
-# Gecili E-Commerce — single Compose file, driven by PROFILES.
+# Gesili E-Commerce — single Compose file, driven by PROFILES.
 #
 # Each phase profile is SELF-CONTAINED: it includes its own backing-service
 # dependencies, so `docker compose --profile phaseN up` brings up everything that
@@ -17,7 +17,7 @@
 # Run from the `infra/` directory. Values come from ../.env (copy from ../.env.example).
 # =============================================================================
 
-name: gecili-ecommerce
+name: gesili-ecommerce
 
 services:
 
@@ -26,19 +26,19 @@ services:
   # ---------------------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
-    container_name: gecili-postgres
+    container_name: gesili-postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       # Databases to create on first boot (one per service that uses Postgres).
-      GECILI_DATABASES: auth,product,inventory,order,payment,notification
+      GESILI_DATABASES: auth,product,inventory,order,payment,notification
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gecili}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gesili}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +49,7 @@ services:
   # ---------------------------------------------------------------------------
   redis:
     image: redis:7-alpine
-    container_name: gecili-redis
+    container_name: gesili-redis
     command: ["redis-server", "--appendonly", "yes"]
     ports:
       - "${REDIS_PORT:-6379}:6379"
@@ -67,7 +67,7 @@ services:
   # ---------------------------------------------------------------------------
   kafka:
     image: confluentinc/cp-kafka:7.7.1
-    container_name: gecili-kafka
+    container_name: gesili-kafka
     ports:
       - "${KAFKA_PORT:-9092}:9092"
     environment:
@@ -84,7 +84,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      CLUSTER_ID: gecili-kraft-cluster-0001
+      CLUSTER_ID: gesili-kraft-cluster-0001
     volumes:
       - kafka-data:/var/lib/kafka/data
     healthcheck:
@@ -100,7 +100,7 @@ services:
   # ---------------------------------------------------------------------------
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
-    container_name: gecili-elasticsearch
+    container_name: gesili-elasticsearch
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -121,7 +121,7 @@ services:
   # ---------------------------------------------------------------------------
   zipkin:
     image: openzipkin/zipkin:3
-    container_name: gecili-zipkin
+    container_name: gesili-zipkin
     ports:
       - "${ZIPKIN_PORT:-9411}:9411"
     healthcheck:
@@ -140,8 +140,8 @@ services:
     build:
       context: ..
       dockerfile: config-server/Dockerfile
-    image: gecili/config-server:0.1.0
-    container_name: gecili-config-server
+    image: gesili/config-server:0.1.0
+    container_name: gesili-config-server
     environment:
       SPRING_PROFILES_ACTIVE: native
       SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS: file:/config-repo
@@ -165,8 +165,8 @@ services:
     build:
       context: ..
       dockerfile: service-registry/Dockerfile
-    image: gecili/service-registry:0.1.0
-    container_name: gecili-service-registry
+    image: gesili/service-registry:0.1.0
+    container_name: gesili-service-registry
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
     ports:
@@ -189,14 +189,14 @@ services:
     build:
       context: ..
       dockerfile: auth-service/Dockerfile
-    image: gecili/auth-service:0.1.0
-    container_name: gecili-auth-service
+    image: gesili/auth-service:0.1.0
+    container_name: gesili-auth-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      AUTH_DB_URL: jdbc:postgresql://postgres:5432/gecili_auth
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      AUTH_DB_URL: jdbc:postgresql://postgres:5432/gesili_auth
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
     ports:
       - "${AUTH_SERVICE_PORT:-9001}:9001"
     depends_on:
@@ -221,8 +221,8 @@ services:
     build:
       context: ..
       dockerfile: api-gateway/Dockerfile
-    image: gecili/api-gateway:0.1.0
-    container_name: gecili-api-gateway
+    image: gesili/api-gateway:0.1.0
+    container_name: gesili-api-gateway
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
@@ -253,14 +253,14 @@ services:
     build:
       context: ..
       dockerfile: product-service/Dockerfile
-    image: gecili/product-service:0.1.0
-    container_name: gecili-product-service
+    image: gesili/product-service:0.1.0
+    container_name: gesili-product-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/gecili_product
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      PRODUCT_DB_URL: jdbc:postgresql://postgres:5432/gesili_product
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       ELASTICSEARCH_URIS: http://elasticsearch:9200
       JWKS_URI: http://auth-service:9001/.well-known/jwks.json
     ports:
@@ -289,14 +289,14 @@ services:
     build:
       context: ..
       dockerfile: inventory-service/Dockerfile
-    image: gecili/inventory-service:0.1.0
-    container_name: gecili-inventory-service
+    image: gesili/inventory-service:0.1.0
+    container_name: gesili-inventory-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      INVENTORY_DB_URL: jdbc:postgresql://postgres:5432/gecili_inventory
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      INVENTORY_DB_URL: jdbc:postgresql://postgres:5432/gesili_inventory
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       JWKS_URI: http://auth-service:9001/.well-known/jwks.json
     ports:
@@ -323,8 +323,8 @@ services:
     build:
       context: ..
       dockerfile: cart-service/Dockerfile
-    image: gecili/cart-service:0.1.0
-    container_name: gecili-cart-service
+    image: gesili/cart-service:0.1.0
+    container_name: gesili-cart-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
@@ -354,14 +354,14 @@ services:
     build:
       context: ..
       dockerfile: order-service/Dockerfile
-    image: gecili/order-service:0.1.0
-    container_name: gecili-order-service
+    image: gesili/order-service:0.1.0
+    container_name: gesili-order-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      ORDER_DB_URL: jdbc:postgresql://postgres:5432/gecili_order
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      ORDER_DB_URL: jdbc:postgresql://postgres:5432/gesili_order
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       JWKS_URI: http://auth-service:9001/.well-known/jwks.json
     ports:
@@ -391,14 +391,14 @@ services:
     build:
       context: ..
       dockerfile: payment-service/Dockerfile
-    image: gecili/payment-service:0.1.0
-    container_name: gecili-payment-service
+    image: gesili/payment-service:0.1.0
+    container_name: gesili-payment-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      PAYMENT_DB_URL: jdbc:postgresql://postgres:5432/gecili_payment
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      PAYMENT_DB_URL: jdbc:postgresql://postgres:5432/gesili_payment
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       JWKS_URI: http://auth-service:9001/.well-known/jwks.json
       PAYMENT_DEFAULT_PROVIDER: ${PAYMENT_DEFAULT_PROVIDER:-razorpay}
@@ -433,14 +433,14 @@ services:
     build:
       context: ..
       dockerfile: notification-service/Dockerfile
-    image: gecili/notification-service:0.1.0
-    container_name: gecili-notification-service
+    image: gesili/notification-service:0.1.0
+    container_name: gesili-notification-service
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_URI: http://service-registry:8761/eureka/
-      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/gecili_notification
-      POSTGRES_USER: ${POSTGRES_USER:-gecili}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gecili}
+      NOTIFICATION_DB_URL: jdbc:postgresql://postgres:5432/gesili_notification
+      POSTGRES_USER: ${POSTGRES_USER:-gesili}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gesili}
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     ports:
       - "${NOTIFICATION_SERVICE_PORT:-9007}:9007"
@@ -466,7 +466,7 @@ services:
   # ---------------------------------------------------------------------------
   prometheus:
     image: prom/prometheus:v2.54.1
-    container_name: gecili-prometheus
+    container_name: gesili-prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
@@ -478,7 +478,7 @@ services:
 
   loki:
     image: grafana/loki:3.2.0
-    container_name: gecili-loki
+    container_name: gesili-loki
     command: ["-config.file=/etc/loki/local-config.yaml"]
     ports:
       - "${LOKI_PORT:-3100}:3100"
@@ -489,7 +489,7 @@ services:
 
   promtail:
     image: grafana/promtail:3.2.0
-    container_name: gecili-promtail
+    container_name: gesili-promtail
     command: ["-config.file=/etc/promtail/config.yaml"]
     volumes:
       - ./monitoring/promtail/promtail-config.yaml:/etc/promtail/config.yaml:ro
@@ -500,7 +500,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.2.2
-    container_name: gecili-grafana
+    container_name: gesili-grafana
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}

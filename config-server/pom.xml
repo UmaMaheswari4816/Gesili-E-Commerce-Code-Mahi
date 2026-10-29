@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>config-server</artifactId>
-    <name>Gecili E-Commerce :: config-server</name>
+    <name>Gesili E-Commerce :: config-server</name>
     <description>Spring Cloud Config Server — centralized configuration served from the
         config-repo/ folder via the native (filesystem) backend. Supports per-service and
         per-profile config and dynamic refresh.</description>

@@ -8,9 +8,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${INVENTORY_DB_URL:jdbc:postgresql://localhost:5432/gecili_inventory}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${INVENTORY_DB_URL:jdbc:postgresql://localhost:5432/gesili_inventory}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -47,7 +47,7 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
-gecili:
+gesili:
   inventory:
     reservation-ttl-seconds: ${RESERVATION_TTL_SECONDS:1200}   # 20 minutes (> 15m payment deadline)
     expiry-scan-ms: ${RESERVATION_EXPIRY_SCAN_MS:60000}

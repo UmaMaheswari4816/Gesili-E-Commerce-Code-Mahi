@@ -8,9 +8,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${NOTIFICATION_DB_URL:jdbc:postgresql://localhost:5432/gecili_notification}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${NOTIFICATION_DB_URL:jdbc:postgresql://localhost:5432/gesili_notification}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -35,7 +35,7 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
-gecili:
+gesili:
   notification:
     default-channel: ${NOTIFICATION_DEFAULT_CHANNEL:email}
 

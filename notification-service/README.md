@@ -26,7 +26,7 @@ Listens on `order.events`, `payment.events`, `inventory.events` and notifies the
 
 ## Run (dev)
 
-Needs PostgreSQL (`gecili_notification`) and Kafka.
+Needs PostgreSQL (`gesili_notification`) and Kafka.
 ```powershell
 .\mvnw.cmd -pl notification-service spring-boot:run
 ```

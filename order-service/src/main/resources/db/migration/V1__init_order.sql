@@ -1,4 +1,4 @@
--- Order service schema (database: gecili_order).
+-- Order service schema (database: gesili_order).
 
 CREATE TABLE orders (
     id               UUID PRIMARY KEY,

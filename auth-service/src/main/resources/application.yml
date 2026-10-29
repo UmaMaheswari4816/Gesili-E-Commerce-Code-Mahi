@@ -13,9 +13,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/gecili_auth}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5432/gesili_auth}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate   # schema is owned by Flyway, never by Hibernate
@@ -34,7 +34,7 @@ eureka:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
 # ---- Auth settings (safe dev defaults; override via config-repo / env) ----
-gecili:
+gesili:
   auth:
     issuer: ${JWT_ISSUER:http://localhost:9001}
     access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:900}

@@ -1,4 +1,4 @@
--- Notification service schema (database: gecili_notification). Audit log + dedup only.
+-- Notification service schema (database: gesili_notification). Audit log + dedup only.
 
 CREATE TABLE notifications (
     id         UUID PRIMARY KEY,

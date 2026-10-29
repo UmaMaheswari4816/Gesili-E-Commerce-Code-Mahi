@@ -12,13 +12,13 @@
         <relativePath/> <!-- look up from the repository -->
     </parent>
 
-    <groupId>com.gecili.ecommerce</groupId>
-    <artifactId>gecili-ecommerce-parent</artifactId>
+    <groupId>com.gesili.ecommerce</groupId>
+    <artifactId>gesili-ecommerce-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Gecili E-Commerce :: Parent</name>
-    <description>Parent POM for the Gecili e-commerce microservices monorepo.
+    <name>Gesili E-Commerce :: Parent</name>
+    <description>Parent POM for the Gesili e-commerce microservices monorepo.
         Centralizes versions, dependency management, and build plugins so every module stays compatible.</description>
 
     <!--
@@ -170,7 +170,7 @@
 
             <!-- The shared library, consumed by every service module. -->
             <dependency>
-                <groupId>com.gecili.ecommerce</groupId>
+                <groupId>com.gesili.ecommerce</groupId>
                 <artifactId>common-lib</artifactId>
                 <version>${project.version}</version>
             </dependency>

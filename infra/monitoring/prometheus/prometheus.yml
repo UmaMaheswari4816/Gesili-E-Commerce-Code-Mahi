@@ -12,7 +12,7 @@ scrape_configs:
 
   # Spring Boot services (enabled per phase). host.docker.internal resolves the
   # Docker host from inside the container on Docker Desktop (Windows/macOS).
-  - job_name: gecili-services
+  - job_name: gesili-services
     metrics_path: /actuator/prometheus
     static_configs:
       - targets:

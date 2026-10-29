@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>common-lib</artifactId>
-    <name>Gecili E-Commerce :: common-lib</name>
+    <name>Gesili E-Commerce :: common-lib</name>
     <description>Shared contracts: DTOs, Kafka events, enums, RFC 7807 error model,
         exceptions, constants, utilities and validation annotations.
         Contains NO JPA entities, repositories or business logic.</description>

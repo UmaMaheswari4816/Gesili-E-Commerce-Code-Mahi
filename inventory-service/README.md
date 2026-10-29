@@ -27,7 +27,7 @@ concurrent buyers are serialized, so they can't both pass the availability check
 
 ## Run (dev)
 
-Needs PostgreSQL (`gecili_inventory`).
+Needs PostgreSQL (`gesili_inventory`).
 ```powershell
 .\mvnw.cmd -pl inventory-service spring-boot:run
 ```

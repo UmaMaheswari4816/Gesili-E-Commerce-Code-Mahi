@@ -10,7 +10,7 @@ export function NavBar() {
 
   return (
     <nav className="topbar">
-      <Link href="/">Gecili Shop</Link>
+      <Link href="/">Gesili Shop</Link>
       <Link href="/cart">Cart</Link>
       <span className="spacer" />
       {user ? (

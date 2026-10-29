@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>payment-service</artifactId>
-    <name>Gecili E-Commerce :: payment-service</name>
+    <name>Gesili E-Commerce :: payment-service</name>
     <description>Payments via a provider Strategy (Razorpay default, Stripe second), async
         webhook flow with raw-body signature verification, idempotent webhooks, refunds for
         late payments, and a reconciliation job.</description>
@@ -95,7 +95,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.gecili.ecommerce</groupId>
+            <groupId>com.gesili.ecommerce</groupId>
             <artifactId>common-lib</artifactId>
         </dependency>
 

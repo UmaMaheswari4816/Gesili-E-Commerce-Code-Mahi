@@ -40,7 +40,7 @@ reconciliation job (ShedLock) retries stuck refunds — the missed-webhook safet
 
 ## Run (dev)
 
-Needs PostgreSQL (`gecili_payment`) and Kafka. Sandbox keys via env (`.env`, gitignored).
+Needs PostgreSQL (`gesili_payment`) and Kafka. Sandbox keys via env (`.env`, gitignored).
 ```powershell
 .\mvnw.cmd -pl payment-service spring-boot:run
 ```

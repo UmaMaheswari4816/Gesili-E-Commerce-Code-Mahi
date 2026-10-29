@@ -8,9 +8,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${ORDER_DB_URL:jdbc:postgresql://localhost:5432/gecili_order}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${ORDER_DB_URL:jdbc:postgresql://localhost:5432/gesili_order}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -48,7 +48,7 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
 
-gecili:
+gesili:
   order:
     payment-deadline-seconds: ${PAYMENT_DEADLINE_SECONDS:900}    # 15m (< 20m reservation TTL)
     payment-timeout-scan-ms: ${PAYMENT_TIMEOUT_SCAN_MS:60000}

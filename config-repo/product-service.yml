@@ -1,5 +1,5 @@
 # Centralized config for product-service.
-gecili:
+gesili:
   product:
     # Max page size accepted by search endpoints (defence against huge queries).
     max-page-size: 100

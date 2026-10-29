@@ -36,7 +36,7 @@ k6 exits non-zero if a threshold is breached, so these double as CI gates.
 ## Watching the system under load
 
 Open Grafana (http://localhost:3000, from the `observability` compose profile) and the
-**Gecili — Overview** dashboard to watch request rate, p95 latency, 5xx rate, the
+**Gesili — Overview** dashboard to watch request rate, p95 latency, 5xx rate, the
 `productLookup` circuit-breaker state, JVM heap, and live logs while k6 runs.
 
 ## JMeter alternative

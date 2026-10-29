@@ -12,9 +12,9 @@ spring:
     import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
   datasource:
-    url: ${PRODUCT_DB_URL:jdbc:postgresql://localhost:5432/gecili_product}
-    username: ${POSTGRES_USER:gecili}
-    password: ${POSTGRES_PASSWORD:gecili}
+    url: ${PRODUCT_DB_URL:jdbc:postgresql://localhost:5432/gesili_product}
+    username: ${POSTGRES_USER:gesili}
+    password: ${POSTGRES_PASSWORD:gesili}
   jpa:
     hibernate:
       ddl-auto: validate

@@ -1,4 +1,4 @@
--- Auth service schema (database: gecili_auth). Owned solely by auth-service.
+-- Auth service schema (database: gesili_auth). Owned solely by auth-service.
 
 CREATE TABLE users (
     id            UUID PRIMARY KEY,

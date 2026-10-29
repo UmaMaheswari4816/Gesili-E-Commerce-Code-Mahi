@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.gecili.ecommerce</groupId>
-        <artifactId>gecili-ecommerce-parent</artifactId>
+        <groupId>com.gesili.ecommerce</groupId>
+        <artifactId>gesili-ecommerce-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>auth-service</artifactId>
-    <name>Gecili E-Commerce :: auth-service</name>
+    <name>Gesili E-Commerce :: auth-service</name>
     <description>Custom authentication service: registration, login, roles, RS256 JWT
         access + refresh tokens with rotation and reuse-detection, and a JWKS endpoint.</description>
 
@@ -107,7 +107,7 @@
 
         <!-- Shared contracts. -->
         <dependency>
-            <groupId>com.gecili.ecommerce</groupId>
+            <groupId>com.gesili.ecommerce</groupId>
             <artifactId>common-lib</artifactId>
         </dependency>
 

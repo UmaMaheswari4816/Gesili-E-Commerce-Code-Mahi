@@ -2,8 +2,8 @@
   "annotations": { "list": [] },
   "editable": true,
   "schemaVersion": 39,
-  "title": "Gecili E-Commerce — Overview",
-  "tags": ["gecili"],
+  "title": "Gesili E-Commerce — Overview",
+  "tags": ["gesili"],
   "time": { "from": "now-30m", "to": "now" },
   "templating": {
     "list": [
@@ -76,7 +76,7 @@
       "title": "Logs (Loki)",
       "datasource": "Loki",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 20 },
-      "targets": [{ "expr": "{container=~\"gecili-.*\"}" }]
+      "targets": [{ "expr": "{container=~\"gesili-.*\"}" }]
     }
   ]
 }

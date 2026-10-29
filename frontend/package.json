@@ -1,8 +1,8 @@
 {
-  "name": "gecili-frontend",
+  "name": "gesili-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "Next.js frontend for the Gecili e-commerce platform (consumes the API gateway).",
+  "description": "Next.js frontend for the Gesili e-commerce platform (consumes the API gateway).",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

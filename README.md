@@ -1,4 +1,4 @@
-# Gecili E-Commerce — Microservices Backend
+# Gesili E-Commerce — Microservices Backend
 
 A production-style, portfolio-grade e-commerce backend built with **Java 21, Spring Boot 3.x,
 and Spring Cloud**, designed as a hands-on study of real-world microservices patterns:
@@ -141,7 +141,7 @@ cp .env.example .env
 ## Repository layout
 
 ```
-Gecili-E-Commerce/
+Gesili-E-Commerce/
 ├── pom.xml                  # parent POM: BOMs, versions, plugins, modules
 ├── mvnw / mvnw.cmd / .mvn/  # Maven Wrapper
 ├── common-lib/              # shared DTOs, events, enums, errors (NO entities/logic)

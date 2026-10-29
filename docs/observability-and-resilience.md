@@ -31,7 +31,7 @@ services ──traces───▶ Zipkin ─────┘
 ```
 
 - **Metrics**: Micrometer → `/actuator/prometheus`; Prometheus scrapes; Grafana dashboard
-  `Gecili — Overview` (request rate, p95 latency, 5xx, circuit-breaker state, JVM heap, logs).
+  `Gesili — Overview` (request rate, p95 latency, 5xx, circuit-breaker state, JVM heap, logs).
 - **Logs**: Promtail ships container logs to Loki; the log pattern embeds
   `traceId`, `spanId`, and `correlationId` so a request's logs are filterable and line up with
   its trace.

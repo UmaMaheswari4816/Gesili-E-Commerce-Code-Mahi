@@ -10,7 +10,7 @@ that builds, tests, builds images, and (optionally) deploys.
 
 ```
 k8s/
-├── helm/gecili/            # the platform chart
+├── helm/gesili/            # the platform chart
 │   ├── Chart.yaml
 │   ├── values.yaml         # services map + defaults + global config
 │   ├── secrets.example.yaml
@@ -49,24 +49,24 @@ This is how real teams keep a fleet of similar services maintainable.
 ```bash
 # 1. create the secret-backed backing services (dev only)
 kubectl apply -f k8s/backing-services/backing-services.yaml   # needs app-secrets first:
-helm template gecili k8s/helm/gecili -s templates/secret.yaml -f k8s/helm/gecili/secrets.prod.yaml | kubectl apply -f -
+helm template gesili k8s/helm/gesili -s templates/secret.yaml -f k8s/helm/gesili/secrets.prod.yaml | kubectl apply -f -
 
 # 2. install the platform (real secrets from your gitignored values file)
-helm upgrade --install gecili k8s/helm/gecili -f k8s/helm/gecili/secrets.prod.yaml
+helm upgrade --install gesili k8s/helm/gesili -f k8s/helm/gesili/secrets.prod.yaml
 
-# 3. point gecili.local at the ingress and browse the aggregated Swagger
-#    (add '127.0.0.1 gecili.local' to your hosts file for a local ingress controller)
+# 3. point gesili.local at the ingress and browse the aggregated Swagger
+#    (add '127.0.0.1 gesili.local' to your hosts file for a local ingress controller)
 ```
 
-Per-service databases (`gecili_auth`, …) must exist in Postgres — run an init Job or create
+Per-service databases (`gesili_auth`, …) must exist in Postgres — run an init Job or create
 them manually (the dev Postgres here starts with just the default DB). For a real deployment
 use CloudNativePG / a managed Postgres with the databases provisioned.
 
 ## Lint / render without a cluster
 
 ```bash
-helm lint k8s/helm/gecili
-helm template gecili k8s/helm/gecili -f k8s/helm/gecili/secrets.example.yaml | less
+helm lint k8s/helm/gesili
+helm template gesili k8s/helm/gesili -f k8s/helm/gesili/secrets.example.yaml | less
 ```
 
 ## CI/CD (GitHub Actions)
